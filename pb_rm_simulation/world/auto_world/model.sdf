@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <model name="auto_world">
+    <static>true</static>
+    <link name="link">
+
+<inertial>
+        <mass>1000</mass>
+        <pose>0 0 0 0 0 0</pose>
+        <inertia>
+          <ixx>0.327090833</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1.374166667</iyy>
+          <iyz>0</iyz>
+          <izz>1.641090833</izz>
+        </inertia>
+      </inertial>
+
+      <!-- Visual of the boundary walls -->
+      <visual name="auto_world">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://auto_world/meshes/auto_world.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      
+       <collision name="platform">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://auto_world/meshes/auto_world.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+ 
+
+    </link>
+  </model>
+</sdf>

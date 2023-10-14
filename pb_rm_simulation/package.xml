@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>pb_rm_simulation</name>
+  <version>1.0.0</version>
+  <description>
+    Gazebo simulation package for the RMUC
+  </description>
+  <maintainer email="1120220476@smbu.edu.cn">Lihan Chen</maintainer>
+  <license>TODO</license>
+  <author email="1120220476@smbu.edu.cn">Lihan Chen</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>gazebo_ros_pkgs</depend>
+
+  <build_depend>launch_ros</build_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <gazebo_ros gazebo_model_path="${prefix}/meshes"/>
+  </export>
+</package>
