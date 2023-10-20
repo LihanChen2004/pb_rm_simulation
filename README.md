@@ -69,7 +69,7 @@ sudo apt install -y libgoogle-glog-dev
 后续编译与运行过程中如果有依赖功能包未安装，按类似的方法安装。
 
 ```
-git clone https://gitee.com/SMBU-POLARBEAR/pb_rmsimulation
+git clone https://github.com/LihanChen2004/PB_RMSimulation.git
 ```
 
 ## 4. 编译与运行
