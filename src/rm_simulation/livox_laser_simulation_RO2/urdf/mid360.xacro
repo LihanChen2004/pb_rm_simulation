@@ -7,7 +7,7 @@
   <xacro:property name="samples" value="40000"/>
   <xacro:property name="resolution" value="0.002"/>
   <xacro:property name="noise_mean" value="0.0"/>
-  <xacro:property name="noise_stddev" value="0.01"/>
+  <xacro:property name="noise_stddev" value="0.002"/>
 
   <xacro:property name="mass" value="0.4" />
   <xacro:property name="length" value="0.1" />

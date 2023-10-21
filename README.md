@@ -69,6 +69,10 @@ sudo apt install -y libgoogle-glog-dev
 后续编译与运行过程中如果有依赖功能包未安装，按类似的方法安装。
 
 ```
+git lfs install
+```
+
+```
 git clone https://github.com/LihanChen2004/PB_RMSimulation.git
 ```
 

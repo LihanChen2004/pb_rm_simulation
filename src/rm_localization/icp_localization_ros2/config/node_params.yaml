@@ -1,6 +1,6 @@
 /icp_localization:
   ros__parameters:
-    pcd_file_path: "/home/polarbear/Desktop/Polarbear_Navigation_ws/pb_rm_simulation_ws/src/rm_localization/FAST_LIO/PCD/downsampled_rm_pt.pcd"
+    pcd_file_path: "/home/polarbear/Desktop/Polarbear_Navigation_ws/pb_rm_simulation_ws/src/rm_simulation/pb_rm_simulation/meshes/RMUC2023_world/preview/downsampled_rm_pt.pcd"
     
     icp_localization_ros2:
       range_data_topic: "/cloud_registered_body"
@@ -30,10 +30,10 @@
         pitch: 0.0
         yaw: 0.0
 
-    odometry_source_to_range_sensor:
-      x: 0.000
-      y: 0.000
-      z: 0.0
-      roll: 0.0
-      pitch: 0.0
-      yaw: 0.0 
+      odometry_source_to_range_sensor:
+        x: 0.000
+        y: 0.000
+        z: 0.0
+        roll: 0.0
+        pitch: 0.0
+        yaw: 0.0 
