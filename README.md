@@ -85,7 +85,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 
 
-- 如需更换地图，在 [race.launch.py](/pb_rm_simulation/launch/race.launch.py) 中配置地图路径即可，也可以通过命令行指定地图路径
+- 如需更换地图，在 [rm_simulation.launch.py](/src/rm_simulation/pb_rm_simulation/launch/rm_simulation.launch.py) 中配置地图路径即可，也可以通过命令行指定地图路径
 
     ```python
     declare_world_cmd = DeclareLaunchArgument(
@@ -115,7 +115,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 目前支持 livox 系列部分雷达: 
 avia, HAP, horizon, mid40, mid70, mid360, tele 雷达。
 
-当前默认使用 mid360 仿真，如需更换其它 Livox 系列雷达进行仿真，请在 [waking_robot.xacro](/pb_rm_simulation/urdf/waking_robot.xacro) 中仿照下述样式修改
+当前默认使用 mid360 仿真，如需更换其它 Livox 系列雷达进行仿真，请在 [waking_robot.xacro](/src/rm_simulation/pb_rm_simulation/urdf/waking_robot.xacro) 中仿照下述样式修改
 
 ```xml
 <!-- mid70 Laser -->
