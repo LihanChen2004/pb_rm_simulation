@@ -1,20 +1,19 @@
 /icp_localization:
   ros__parameters:
-    pcd_file_path: "/home/polarbear/Desktop/Polarbear_Navigation_ws/pb_rm_simulation_ws/src/rm_simulation/pb_rm_simulation/meshes/RMUC2023_world/preview/downsampled_rm_pt.pcd"
-    
+    pcd_file_path: "src/rm_simulation/pb_rm_simulation/meshes/RMUC2023_world/preview/downsampled_rm_pt.pcd"
     icp_localization_ros2:
       range_data_topic: "/cloud_registered_body"
       num_accumulated_range_data: 1
       imu_data_topic: "/imu"
-      odometry_data_topic: "/Odometry"
+      odometry_data_topic: "/odom"
       is_use_odometry: true
-      is_provide_odom_frame: true
-      gravity_vector_filter_time_constant: 0.01
+      is_provide_odom_frame: false
+      gravity_vector_filter_time_constant: 0.05
       fixed_frame: "map"
-      min_num_odom_msgs_before_ready: 5
+      min_num_odom_msgs_before_ready: 10
 
     initial_pose:
-      x: 0.0 
+      x: 0.0
       y: 0.0 
       z: 0.0 
       roll: 0.0  # degrees  

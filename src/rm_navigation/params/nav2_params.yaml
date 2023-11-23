@@ -221,8 +221,8 @@ controller_server:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 10.0
-      publish_frequency: 10.0
+      update_frequency: 20.0
+      publish_frequency: 20.0
       global_frame: map 
       robot_base_frame: base_link
       use_sim_time: True
@@ -240,20 +240,9 @@ local_costmap:
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: rplidar livox 
+        observation_sources: livox 
         max_obstacle_height: 1.0
         min_obstacle_height: -1.0
-        rplidar:
-          topic: /rplidar/scan
-          max_obstacle_height: 1.0
-          min_obstacle_height: -1.0
-          clearing: True
-          marking: True
-          data_type: "LaserScan"
-          raytrace_max_range: 9.0
-          raytrace_min_range: 0.0
-          obstacle_max_range: 7.5
-          obstacle_min_range: 0.0
         livox:
           topic: /scan
           max_obstacle_height: 1.0
@@ -408,12 +397,12 @@ velocity_smoother:
   ros__parameters:
     use_sim_time: True
     smoothing_frequency: 20.0
-    scale_velocities: False
+    scale_velocities: True
     feedback: "OPEN_LOOP"
-    max_velocity: [2.0, 5.0, 20.0]
-    min_velocity: [-2.0, -5.0, -20.0]
-    max_accel: [5.5, 3.0, 20.2]
-    max_decel: [-5.5, -3.0, -20.2]
+    max_velocity: [2.0, 5.0, 12.0]
+    min_velocity: [-2.0, -5.0, -12.0]
+    max_accel: [5.5, 3.0, 15.2]
+    max_decel: [-5.5, -3.0, -15.2]
     odom_topic: "odom"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]

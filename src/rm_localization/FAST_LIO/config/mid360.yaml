@@ -1,6 +1,5 @@
 /**:
     ros__parameters:
-        map_file_path: ""
         common:
             lid_topic:  "/mid360"
             imu_topic:  "/imu"
@@ -9,9 +8,9 @@
                                         # This param will take effect no matter what time_sync_en is. So if the time offset is not known exactly, please set as 0.0
 
         preprocess:
-            lidar_type: 1               # 1 for Livox serials LiDAR, 2 for Velodyne LiDAR, 3 for ouster LiDAR, 4 for any other pointcloud input
-            scan_line:  4
-            blind: 0.1
+            lidar_type: 1                # 1 for Livox serials LiDAR, 2 for Velodyne LiDAR, 3 for ouster LiDAR, 
+            scan_line:  64
+            blind: 2.0
             timestamp_unit: 3
             scan_rate: 10
 
@@ -21,23 +20,27 @@
             b_acc_cov: 0.0001
             b_gyr_cov: 0.0001
             fov_degree:    360.0
-            det_range:     100.0
-            extrinsic_est_en:  true      # true: enable the online estimation of IMU-LiDAR extrinsic
+            det_range:     200.0
+            extrinsic_est_en:  true      # true: enable the online estimation of IMU-LiDAR extrinsic,
             extrinsic_T: [ 0.00, 0.00, -0.05 ]
             extrinsic_R: [ 1.0, 0.0, 0.0,
-                            0.0, 1.0, 0.0,
-                            0.0, 0.0, 1.0 ]
+                           0.0, 1.0, 0.0,
+                           0.0, 0.0, 1.0 ]
 
 
         publish:
             path_en: true                # true: publish Path
-            effect_map_en: false         # true: publish Effects
-            map_en: false                 # true: publish Map cloud
             scan_publish_en:  true       # false: close all the point cloud output
-            dense_publish_en: false      # false: low down the points number in a global-frame point clouds scan.
+            dense_publish_en: true       # false: low down the points number in a global-frame point clouds scan.
             scan_bodyframe_pub_en: true  # true: output the point cloud scans in IMU-body-frame
 
+        # when you use docker, you should enter the absolute path of in docker container
+        map_file_path: "src/FAST_LIO/PCD/328.pcd" 
         pcd_save:
             pcd_save_en: false
             interval: -1                 # how many LiDAR frames saved in each pcd file; 
                                         # -1 : all frames will be saved in ONE pcd file, may lead to memory crash when having too much frames.
+        
+        traj_save:
+            traj_save_en: false
+            traj_file_path: "src/FAST_LIO/traj/328.txt" # when you use docker, you should enter the absolute path of in docker container
