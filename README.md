@@ -1,3 +1,11 @@
+# 本项目在 Github 上停止更新 !!!
+## This project has stopped updating on Github!!!
+
+由于 Git LFS 超出限额，获取最新代码请移步至 Gitee ~ \
+Due to exceeding the Git LFS quota, please move to Gitee to access the latest code ~
+
+[PB_RMSimulation](https://gitee.com/SMBU-POLARBEAR/pb_rmsimulation)
+
 # PB_RM_Simulation
 深圳北理莫斯科大学 北极熊战队 哨兵导航仿真包
 
