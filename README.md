@@ -40,7 +40,7 @@
 1. 克隆仓库
 
     ```sh
-    git clone --recursive https://gitee.com/SMBU-POLARBEAR/pb_rmsimulation --depth=1
+    git clone --recursive https://github.com/LihanChen2004/PB_RMSimulation.git
     ```
 
 2. 安装 [Livox SDK2](https://github.com/Livox-SDK/Livox-SDK2)
