@@ -1,0 +1,17 @@
+devel/
+build/
+install/
+log/
+
+.vscode/
+.cache/
+__pycache__/
+.catkin_workspace
+*.gv
+*.pdf
+
+mat_pre.txt
+mat_out.txt
+imu.txt
+dbg.txt
+pos_log.txt
