@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="M_PI" value="3.1415926"/> 
+  <xacro:property name="laser_min_range" value="0.1"/>
+  <xacro:property name="laser_max_range" value="200.0"/>
+  <xacro:property name="samples" value="30000"/>
+  <xacro:property name="resolution" value="0.002"/>
+  <xacro:property name="noise_mean" value="0.0"/>
+  <xacro:property name="noise_stddev" value="0.002"/>
+
+  <xacro:property name="mass" value="0.4" />
+  <xacro:property name="length" value="0.1" />
+  <xacro:property name="width" value="0.06" />
+  <xacro:property name="height" value="0.06" />
+
+  <xacro:macro name="box_inertia" params="m w h d">
+    <inertial>
+      <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}"/>
+      <mass value="${m}"/>
+      <inertia ixx="${(m/12) * (h*h + d*d)}" ixy="0.0" ixz="0.0" iyy="${(m/12) * (w*w + d*d)}" iyz="0.0" izz="${(m/12) * (w*w + h*h)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="mid360" params="name:='' parent:= 'base_link' topic:='mid360' *origin ">
+
+    <link name="${name}">
+      <visual>
+        <origin xyz="0.025 -0.0265 -0.025" rpy="${pi/2} 0 ${pi}"/>
+        <geometry>
+          <mesh filename="model://mid360.stl" scale="0.0008 0.0008 0.0008"/>
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}"/>
+      <xacro:insert_block name="origin"/>
+    </joint>
+
+    <gazebo reference="${name}">
+      <sensor type="ray" name="${name}">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>10</update_rate>
+        <plugin name="${name}_plugin" filename="libros2_livox.so">
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>100</samples>
+                <resolution>1</resolution>
+                <min_angle>${0}</min_angle>
+                <max_angle>${2*M_PI}</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>360</samples>
+                <resolution>1</resolution>
+                <min_angle>${-7.22/180*M_PI}</min_angle>
+                <max_angle>${55.22/180*M_PI}</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>${laser_min_range}</min>
+              <max>${laser_max_range}</max>
+              <resolution>${resolution}</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>${noise_mean}</mean>
+              <stddev>${noise_stddev}</stddev>
+            </noise>
+          </ray>
+          <visualize>false</visualize>
+          <samples>${samples}</samples>
+          <downsample>1</downsample>
+          <csv_file_name>$(find ros2_livox_simulation)/scan_mode/mid360.csv</csv_file_name>
+          <topic>${topic}</topic>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+</robot>
+

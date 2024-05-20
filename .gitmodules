@@ -1,0 +1,15 @@
+[submodule "src/rm_driver/livox_ros_driver2"]
+	path = src/rm_driver/livox_ros_driver2
+	url = https://gitee.com/SMBU-POLARBEAR/livox_ros_driver2_humble.git
+[submodule "src/rm_navigation/teb_local_planner"]
+	path = src/rm_navigation/teb_local_planner
+	url = https://github.com/rst-tu-dortmund/teb_local_planner.git
+[submodule "src/rm_navigation/costmap_converter"]
+	path = src/rm_navigation/costmap_converter
+	url = https://github.com/LihanChen2004/costmap_converter.git
+[submodule "src/rm_localization/FAST_LIO"]
+	path = src/rm_localization/FAST_LIO
+	url = https://github.com/LihanChen2004/FAST_LIO.git
+[submodule "src/rm_localization/point_lio"]
+	path = src/rm_localization/point_lio
+	url = https://github.com/LihanChen2004/Point-LIO.git

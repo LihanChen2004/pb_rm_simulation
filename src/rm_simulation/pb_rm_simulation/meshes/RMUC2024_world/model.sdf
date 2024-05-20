@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="RMUC2024_world">
+    <static>true</static>
+    <link name="link">
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>10402000</mass>
+        <inertia>
+          <ixx>3970000000</ixx>
+          <ixy>20876000</ixy>
+          <ixz>613230000</ixz>
+          <iyy>9033200000</iyy>
+          <iyz>-269580000</iyz>
+          <izz>5839000000</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://RMUC2024_world/meshes/RMUC_2024.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://RMUC2024_world/meshes/RMUC2024_world</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

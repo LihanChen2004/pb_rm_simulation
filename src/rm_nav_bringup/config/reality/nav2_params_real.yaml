@@ -1,0 +1,403 @@
+amcl:
+  ros__parameters:
+    use_sim_time: False
+    alpha1: 0.2
+    alpha2: 0.2
+    alpha3: 0.2
+    alpha4: 0.2
+    alpha5: 0.2
+    base_frame_id: "base_link"
+    beam_skip_distance: 0.5
+    beam_skip_error_threshold: 0.9
+    beam_skip_threshold: 0.3
+    do_beamskip: false
+    global_frame_id: "map"
+    lambda_short: 0.1
+    laser_likelihood_max_dist: 2.0
+    laser_max_range: 100.0
+    laser_min_range: -1.0
+    laser_model_type: "likelihood_field"
+    max_beams: 60
+    max_particles: 2000
+    min_particles: 500
+    odom_frame_id: "odom"
+    pf_err: 0.05
+    pf_z: 0.99
+    recovery_alpha_fast: 0.0
+    recovery_alpha_slow: 0.0
+    resample_interval: 1
+    robot_model_type: "nav2_amcl::OmniMotionModel"
+    save_pose_rate: 0.5
+    sigma_hit: 0.2
+    tf_broadcast: true
+    transform_tolerance: 1.0
+    update_min_a: 0.2
+    update_min_d: 0.25
+    z_hit: 0.5
+    z_max: 0.05
+    z_rand: 0.5
+    z_short: 0.05
+    scan_topic: scan
+
+amcl_map_client:
+  ros__parameters:
+    use_sim_time: False
+
+amcl_rclcpp_node:
+  ros__parameters:
+    use_sim_time: False
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: False
+    global_frame: map
+    robot_base_frame: base_link_fake
+    odom_topic: /Odometry
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    plugin_lib_names:
+    - nav2_compute_path_to_pose_action_bt_node
+    - nav2_compute_path_through_poses_action_bt_node
+    - nav2_follow_path_action_bt_node
+    - nav2_back_up_action_bt_node
+    - nav2_spin_action_bt_node
+    - nav2_wait_action_bt_node
+    - nav2_clear_costmap_service_bt_node
+    - nav2_is_stuck_condition_bt_node
+    - nav2_goal_reached_condition_bt_node
+    - nav2_goal_updated_condition_bt_node
+    - nav2_initial_pose_received_condition_bt_node
+    - nav2_reinitialize_global_localization_service_bt_node
+    - nav2_rate_controller_bt_node
+    - nav2_distance_controller_bt_node
+    - nav2_speed_controller_bt_node
+    - nav2_truncate_path_action_bt_node
+    - nav2_goal_updater_node_bt_node
+    - nav2_recovery_node_bt_node
+    - nav2_pipeline_sequence_bt_node
+    - nav2_round_robin_node_bt_node
+    - nav2_transform_available_condition_bt_node
+    - nav2_time_expired_condition_bt_node
+    - nav2_distance_traveled_condition_bt_node
+    - nav2_single_trigger_bt_node
+    - nav2_is_battery_low_condition_bt_node
+    - nav2_navigate_through_poses_action_bt_node
+    - nav2_navigate_to_pose_action_bt_node
+    - nav2_remove_passed_goals_action_bt_node
+    - nav2_planner_selector_bt_node
+    - nav2_controller_selector_bt_node
+    - nav2_goal_checker_selector_bt_node
+
+controller_server:
+  ros__parameters:
+    use_sim_time: False
+    controller_frequency: 20.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.1
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    progress_checker_plugin: "progress_checker"
+    goal_checker_plugins: ["general_goal_checker"] # "precise_goal_checker"
+    controller_plugins: ["FollowPath"]
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.5
+      movement_time_allowance: 10.0
+    general_goal_checker:
+      stateful: True
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.25
+      yaw_goal_tolerance: 6.28
+    FollowPath:
+      plugin: teb_local_planner::TebLocalPlannerROS
+      # https://github.com/rst-tu-dortmund/teb_local_planner/tree/ros2-master
+
+      #*******************************************************************************
+      # Trajectory
+      #*******************************************************************************
+      teb_autosize: 1.0                             #是否自动调整轨迹大小。根据时间分辨率自动调整轨迹大小
+      dt_ref: 0.6                                   #轨迹的期望时间分辨率（应该与底层控制速率的数量级相符）
+      dt_hysteresis: 0.06                           #自动调整大小的滞后（根据当前时间分辨率 dt）：通常为 dt_ref 的 10%
+      max_samples: 500                              #最大样本数量；警告：如果太小，离散化/分辨率可能不足以用于给定的机器人模型，或者避障不再有效。
+      global_plan_overwrite_orientation: False       #覆盖全局规划器提供的局部子目标的方向
+      allow_init_with_backwards_motion: True        #如果为真，基础轨迹可能会以后退运动初始化，以防目标在本地代价地图中位于起点之后（仅当机器人配备后部传感器时推荐）
+      max_global_plan_lookahead_dist: 1.2           #指定用于优化考虑的全局规划子集的最大长度（累积欧氏距离）[如果 <=0：禁用；长度也受到本地代价地图大小的限制！
+      force_reinit_new_goal_dist: 1.0               #如果之前的目标更新距离超过此值，则强制规划器重新初始化轨迹
+      force_reinit_new_goal_angular: 0.78           #如果之前的目标更新的角度超过此弧度值，则强制规划器重新初始化轨迹
+      feasibility_check_no_poses: 0                 #在预测路径上，每个采样间隔需要检查可行性的姿态数目
+      feasibility_check_lookahead_distance: 1.5     #每个采样间隔需要检查可行性的距离（以及feasibility_check_no_poses之下的索引）与机器人之间的距离。-1检查所有姿势，直到feasibility_check_no_poses。https://robotics.stackexchange.com/questions/80845/what-are-reasons-for-teb-planners-feasibility-check-to-fail
+      exact_arc_length: False                       #如果为真，规划器在速度、加速度和转向率计算中使用准确的弧长 [-> 增加 CPU 时间]，否则使用欧氏近似。
+      publish_feedback: False                       #发布包含完整轨迹和活动障碍物列表的规划器反馈（应仅用于评估或调试目的）
+      visualize_with_time_as_z_axis_scale: 0.0      #在rviz里可看到优化使用的graph
+
+      #*******************************************************************************
+      # ViaPoints 中间点
+      #*******************************************************************************
+      global_plan_viapoint_sep: 0.5         #从全局计划中提取的连续中间点之间的最小分离距离
+      via_points_ordered: False             #是否遵循存储容器中中间点的顺序
+
+      #*******************************************************************************
+      # Robot
+      #*******************************************************************************
+      max_vel_x: 2.0                        #最大平移速度
+      max_vel_x_backwards: 2.0              #最大后退速度
+      max_vel_theta: 3.0                   #最大转向角速度
+      acc_lim_x: 4.5                        #最大平移加速度
+      acc_lim_theta: 3.0                   #最大角加速度
+      is_footprint_dynamic: False           #如果为真，在检查轨迹可行性之前更新足迹
+      use_proportional_saturation: False    #如果为true，则按比例减少所有扭曲分量（线性x和y以及角度z）（如果任何扭曲分量超过其相应的界限），而不是单独饱和每个扭曲分量
+      transform_tolerance: 0.5              #在TF树中查询转换时的容差（秒）
+
+      #*******************************************************************************
+      # Robot/Carlike 此部分参数仅适用于类似汽车的机器人（如差速驱动机器人）
+      #*******************************************************************************
+      # min_turning_radius: 0.0             #机器人的最小转弯半径。对于差速驱动机器人，此值为0
+      # wheelbase: 1.0                      #驱动轮轴与转向轮轴之间的距离。后轮驱动机器人此值可能为负数。
+      # cmd_angle_instead_rotvel: False     #是否用转向角代替控制指令消息中的旋转速度（需要结合轴距参数使用）
+      
+      #*******************************************************************************
+      # Robot/Omni 此部分参数仅适用于全方位移动机器人
+      #*******************************************************************************
+      max_vel_y: 2.0
+      acc_lim_y: 4.0
+      
+      #*******************************************************************************
+      # GoalTolerance 目标容差
+      #*******************************************************************************
+      free_goal_vel: False      #允许机器人以最大速度驶向目的地，为False时，车到达终点时的目标速度为0；
+
+      #*******************************************************************************
+      # Obstacles 障碍物
+      #*******************************************************************************
+      min_obstacle_dist: 0.25                     #机器人与障碍物之间最小的期望间隔距离
+      inflation_dist: 0.6                         #障碍物周围的缓冲区，用于增加安全裕度。此缓冲区内具有非零的惩罚代价
+      dynamic_obstacle_inflation_dist: 0.7        #具有非零惩罚成本的动态障碍物预测位置周围的缓冲区（应大于min_obstacle_dist才能生效)
+      include_dynamic_obstacles: True             #预测动态障碍物周围的缓冲区，用于增加安全裕度。此缓冲区内具有非零的惩罚代价
+      include_costmap_obstacles: True             #是否直接考虑代价地图中的障碍物 (如果没有单独的聚类和检测功能，则需要此选项)
+      legacy_obstacle_association: False          #是否严格遵循局部规划出来的路径。如果为真，则使用旧的关联策略 (为每个障碍物找到最近的 TEB 姿势)，否则使用新的关联策略 (为每个 TEB 姿势仅找到“相关”障碍物)
+      costmap_obstacles_behind_robot_dist: 1.5    #限制规划时考虑的占据局部代价地图障碍物 (指定距离，米)。该值仅对机器人后方的障碍物生效。
+      obstacle_poses_affected: 15                 #为了减少计算量，障碍物位置会附加到轨迹上最近的姿态上，但也会考虑一定数量的相邻姿态。
+
+      # costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
+      # costmap_converter_spin_thread: True
+      # costmap_converter_rate: 10
+  
+      #*******************************************************************************
+      # Obstacle - Velocity ratio parameters 该组包含用于根据障碍物 proximity 动态调整机器人速度的设置。
+      #*******************************************************************************
+      obstacle_proximity_ratio_max_vel: 1.0     #由于接近静态障碍物而降低速度时用作上限的比率。
+      obstacle_proximity_lower_bound: 0.0       #需要降低速度的静态障碍物距离 (米)
+      obstacle_proximity_upper_bound: 0.5       #应该保持较高速度的静态障碍物距离 (米)
+
+      #*******************************************************************************
+      # Optimization 优化
+      #*******************************************************************************
+      no_inner_iterations: 5         #在外循环每次迭代中调用求解器迭代的次数
+      no_outer_iterations: 4         #外循环每次迭代会自动调整轨迹大小，并使用指定的内部迭代次数调用内部优化器
+      optimization_activate: True    #启用优化功能
+      optimization_verbose: False    #打印详细的优化过程信息
+      penalty_epsilon: 0.15          #为惩罚函数添加微小的安全裕量，用于处理难以满足的硬性约束条件
+
+      # 权重参数
+      obstacle_cost_exponent: 4.0
+      weight_max_vel_x: 2.0                   #满足最大允许平移速度的权重
+      weight_max_vel_y: 2.0                   #满足最大允许横移速度的权重 (仅用于全向移动机器人)
+      weight_max_vel_theta: 1.0               #满足最大允许角速度的权重
+      weight_acc_lim_x: 1.0                   #满足最大允许平移加速度的权重
+      weight_acc_lim_y: 1.0                   #满足最大允许横移加速度的权重 (仅用于全向移动机器人)
+      weight_acc_lim_theta: 1.0               #满足最大允许角加速度的权重
+      weight_kinematics_nh: 0.0               #满足非全向运动学约束的权重
+      weight_kinematics_forward_drive: 0.0    #强制机器人仅选择向前运动方向的权重 (仅用于差分驱动机器人)
+      weight_kinematics_turning_radius: 0.1   #强制最小转弯半径（小车型机器人）的优化权重
+      weight_optimaltime: 0.1                 #优化轨迹并尽量缩短运动时间的权重，确保在规定的时间内到达目标
+      weight_shortest_path: 0.0               #倾向于选择更短的路径，路径可能更加弯曲或不平坦
+      weight_obstacle: 100.0                  #与障碍物保持最小距离的权重
+      weight_inflation: 0.2                   #优化轨迹并尽量避免膨胀区域的权重 (权重应设置较小)
+      weight_dynamic_obstacle: 10.0           #与动态障碍物保持最小距离的权重
+      weight_dynamic_obstacle_inflation: 0.2  #优化轨迹并尽量避免动态障碍物膨胀区域的权重 (权重应设置较小)
+      weight_viapoint: 1.0                    #一些特定的权重 (例如 weight_obstacle) 会在外循环每次迭代中乘以该因子进行调整。这样逐步增加权重比直接设置较高的权重值可以改善优化问题的数值条件
+      weight_adapt_factor: 2.0                #非线性障碍物代价的指数 (cost = linear_cost * obstacle_cost_exponent)。设置为 1 则禁用非线性代价 (默认值)
+
+      #*******************************************************************************
+      # Homotopy Class Planner
+      #*******************************************************************************
+      enable_homotopy_class_planning: False
+      enable_multithreading: True            #是否启用多线程并行规划多个路径
+      max_number_classes: 3                  #允许探索的最大替代拓扑类别数 (会增加计算量)
+      selection_cost_hysteresis: 1.0
+      selection_prefer_initial_plan: 1.0
+      selection_obst_cost_scale: 1.0
+      selection_alternative_time_cost: True
+
+      roadmap_graph_no_samples: 15          #指定为创建路线图而生成的样本数
+      roadmap_graph_area_width: 5.0         #指定该区域的宽度
+      roadmap_graph_area_length_scale: 1.0  #矩形区域的长度由起点和终点之间的距离决定。该参数会进一步缩放距离，使几何中心保持不变
+      h_signature_prescaler: 0.5            #（0.2 < value <= 1）缩放用于区分同伦类的内部参数
+      h_signature_threshold: 0.1            #如果实部和复部的差都低于规定的阈值，则假定两个h签名相等。
+      obstacle_heading_threshold: 0.45      #为了将障碍物纳入探索范围，需要指定障碍物朝向和目标朝向的归一化点积的阈值
+      switching_blocking_period: 0.0        #指定允许切换到新的等效类之前需要终止的持续时间
+      viapoints_all_candidates: True        #若为真，则所有不同拓扑结构的路径都会附加到路径点集合上，否则只会附加与初始/全局计划共享相同路径点的路径 (在测试优化节点中没有效果)
+      delete_detours_backwards: True 
+      max_ratio_detours_duration_best_duration: 3.0
+      visualize_hc_graph: False             #可视化用于探索新拓扑类的图
+
+      #*******************************************************************************
+      # Recovery
+      #*******************************************************************************
+      #当规划器检测到系统异常，允许缩小时域规划范围,TEB将以更近的点作为规划目标，尝试重新规划出可行路径;
+      shrink_horizon_backup: True         
+      shrink_horizon_min_duration: 10.0         #如果检测到不可行的轨迹，激活缩小的水平线后备模式，本参数为其最短持续时间。
+      oscillation_recovery: True                #尝试检测和解决振荡
+      oscillation_v_eps: 0.1                    #(0,1)内的 normalized 线速度的平均值的阈值，判断机器人是否运动异常
+      oscillation_omega_eps: 0.1                #(0,1)内的 normalized 角速度的平均值，判断机器人是否运动异常
+      oscillation_recovery_min_duration: 10.0   #在这个时间内，是否再次发生FailureDetector检测的振荡
+      oscillation_filter_duration: 10.0         #failure_detector_中buffer容器的大小为oscillation_filter_duration * controller_frequency
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 20.0
+      publish_frequency: 10.0
+      global_frame: map
+      robot_base_frame: base_link_fake
+      use_sim_time: False
+      rolling_window: true
+      width: 5
+      height: 5
+      resolution: 0.02
+      robot_radius: 0.2
+      plugins: ["voxel2d_layer", "inflation_layer"]
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 8.0
+        inflation_radius: 0.7
+      voxel2d_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: True
+        publish_voxel_map: False
+        origin_z: 0.0
+        z_resolution: 0.05
+        z_voxels: 16
+        max_obstacle_height: 2.0
+        mark_threshold: 0
+        observation_sources: scan
+        scan:
+          topic: /scan
+          obstacle_max_range: 10.0
+          obstacle_min_range: 0.0
+          raytrace_min_range: 0.0
+          raytrace_max_range: 20.0
+          min_obstacle_height: 0.0
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+      static_layer:
+        map_subscribe_transient_local: True
+      always_send_full_costmap: True
+  local_costmap_client:
+    ros__parameters:
+      use_sim_time: False
+  local_costmap_rclcpp_node:
+    ros__parameters:
+      use_sim_time: False
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: map
+      robot_base_frame: base_link_fake
+      use_sim_time: False
+      robot_radius: 0.2
+      resolution: 0.04
+      track_unknown_space: true
+      plugins: ["static_layer", "voxel3d_layer", "inflation_layer"]
+      voxel3d_layer:
+        plugin: "nav2_costmap_2d::VoxelLayer"
+        enabled: True
+        publish_voxel_map: False
+        origin_z: 0.0
+        z_resolution: 0.05
+        z_voxels: 16
+        mark_threshold: 1
+        observation_sources: livox
+        min_obstacle_height: 0.00
+        max_obstacle_height: 2.0
+        livox:
+          topic: /segmentation/obstacle
+          obstacle_max_range: 10.0
+          obstacle_min_range: 0.0
+          raytrace_min_range: 0.0
+          raytrace_max_range: 20.0
+          min_obstacle_height: 0.0
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "PointCloud2"
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: True
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 8.0
+        inflation_radius: 0.7
+      always_send_full_costmap: True
+
+map_saver:
+  ros__parameters:
+    use_sim_time: False
+    save_map_timeout: 5.0
+    free_thresh_default: 0.25
+    occupied_thresh_default: 0.65
+    map_subscribe_transient_local: True
+
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 5.0
+    use_sim_time: False
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.5
+      use_astar: false
+      allow_unknown: true
+
+recoveries_server:
+  ros__parameters:
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0
+    recovery_plugins: ["spin", "backup"]
+    spin:
+      plugin: "nav2_recoveries/Spin"
+    backup:
+      plugin: "nav2_recoveries/BackUp"
+    global_frame: odom
+    robot_base_frame: base_link_fake
+    transform_timeout: 0.1
+    use_sim_time: False
+    simulate_ahead_time: 1.0
+    max_rotational_vel: 20.0
+    min_rotational_vel: 0.4
+    rotational_acc_lim: 10.0
+
+map_server:
+  ros__parameters:
+    use_sim_time: False
+    yaml_filename: ""
+
+velocity_smoother:
+  ros__parameters:
+    smoothing_frequency: 20.0
+    scale_velocities: False
+    feedback: "OPEN_LOOP"
+    max_velocity: [2.0, 2.0, 10.0]
+    min_velocity: [-2.0, -2.0, -10.0]
+    deadband_velocity: [0.0, 0.0, 0.0]
+    velocity_timeout: 1.0
+    max_accel: [4.0, 4.0, 10.0]
+    max_decel: [-4.0, -4.0, -10.0]
+    odom_topic: "Odometry"
+    odom_duration: 0.1

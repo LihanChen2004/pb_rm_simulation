@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+
+<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="length_wheel" value="0.05" />
+  <xacro:property name="radius_wheel" value="0.06" />
+  <xacro:property name="PI" value="3.1415926"/>
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0"
+                    iyy="0.01" iyz="0.0" izz="0.01" />
+    </inertial>
+  </xacro:macro>
+
+  <!-- base_link to livox_frame -->
+  <xacro:arg name="xyz" default="0.0 0.045 0.49" />
+  <xacro:arg name="rpy" default="0 0 0" />
+  
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.2 .3 .1"/>
+      </geometry>
+      <origin rpy="0 0 ${PI/2}" xyz="0 0 0.05"/>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.2 .3 0.1"/>
+      </geometry>
+      <origin rpy="0 0 ${PI/2}" xyz="0 0 0.05"/>
+    </collision>
+    <xacro:default_inertial mass="8.2"/>
+  </link>
+
+  <link name="wheel_1">
+    <visual>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+    </collision>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <xacro:default_inertial mass="0.5"/>
+  </link>
+
+  <link name="wheel_2">
+    <visual>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+    </collision>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <xacro:default_inertial mass="0.5"/>
+  </link>
+
+  <link name="wheel_3">
+    <visual>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+    </collision>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <xacro:default_inertial mass="0.5"/>
+  </link>
+
+  <link name="wheel_4">
+    <visual>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${length_wheel}" radius="${radius_wheel}"/>
+      </geometry>
+    </collision>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <xacro:default_inertial mass="0.5"/>
+  </link>
+
+  <joint name="base_to_wheel1" type="fixed">
+    <parent link="base_link"/>
+    <child link="wheel_1"/>
+    <origin rpy="${-PI/2} 0 0" xyz="0.1 0.13 0"/>
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <joint name="base_to_wheel2" type="fixed">
+    <axis xyz="0 0 1" />
+    <anchor xyz="0 0 0" />
+    <limit effort="100" velocity="100" />
+    <parent link="base_link"/>
+    <child link="wheel_2"/>
+    <origin rpy="${-PI/2} 0 0" xyz="-0.1 0.13 0"/>
+  </joint>
+
+  <joint name="base_to_wheel3" type="fixed">
+    <parent link="base_link"/>
+    <axis xyz="0 0 1" />
+    <child link="wheel_3"/>
+    <origin rpy="${-PI/2} 0 0" xyz="0.1 -0.13 0"/>
+  </joint>
+  
+  <joint name="base_to_wheel4" type="fixed">
+    <parent link="base_link"/>
+    <axis xyz="0 0 1" />
+    <child link="wheel_4"/>
+    <origin rpy="${-PI/2} 0 0" xyz="-0.1 -0.13 0"/>
+  </joint>
+
+  <!-- Livox-Mid360  -->
+  <link name="livox_frame">
+    <visual>
+      <origin xyz="0.025 -0.0265 -0.025" rpy="${pi/2} 0 ${pi}"/>
+      <geometry>
+        <mesh filename="package://pb_rm_simulation/meshes/mid360.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1.0 1" />
+      </material>
+    </visual>
+  </link>
+
+  <joint name="livox_joint" type="fixed">
+    <origin xyz="$(arg xyz)" rpy="$(arg rpy)" />
+    <parent link="base_link"/>
+    <child link="livox_frame"/>
+  </joint>
+
+</robot>

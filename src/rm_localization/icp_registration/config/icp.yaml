@@ -1,0 +1,15 @@
+/icp_registration:
+  ros__parameters:
+    use_sim_time: false 
+    rough_leaf_size: 0.4
+    refine_leaf_size: 0.1
+    pcd_path: "/home/zcf/Downloads/RMUL.pcd"
+    map_frame_id: "map"
+    odom_frame_id: "odom"
+    laser_frame_id: "livox_frame"
+    pointcloud_topic: "/livox/lidar/pointcloud"
+    thresh: 0.1
+    xy_offset: 0.2
+    yaw_offset: 30.0
+    yaw_resolution: 10.0
+    initial_pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] # x,y,z,roll,pitch,yaw
