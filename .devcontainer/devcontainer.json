@@ -1,0 +1,27 @@
+{
+	"name": "pb_rm_simulation",
+	"image": "lihanchen2004/pb_rm_simulation:1.0.0",
+	"runArgs": [
+	  "--init",
+	  "--gpus=all",
+	  "--privileged",
+	  "--env=NVIDIA_DRIVER_CAPABILITIES=all",
+	  "--env=DISPLAY=${localEnv:DISPLAY}",
+	  "--env=QT_X11_NO_MITSHM=1",
+	  "--volume=/tmp/.X11-unix:/tmp/.X11-unix",
+	  "--network=host"
+	],
+	"customizations": {
+	  "vscode": {
+			"extensions": [
+				"llvm-vs-code-extensions.vscode-clangd",
+				"vadimcn.vscode-lldb",
+				"xaver.clang-format",
+				"ms-python.python",
+				"ms-iot.vscode-ros",
+				"ms-vscode.cmake-tools",
+				"usernamehw.errorlens"
+			]
+	  }
+	}
+}
