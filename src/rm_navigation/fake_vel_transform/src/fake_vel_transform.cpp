@@ -10,7 +10,7 @@ namespace fake_vel_transform
 {
 const std::string CMD_VEL_TOPIC = "/cmd_vel";
 const std::string AFTER_TF_CMD_VEL = "/cmd_vel_chassis";
-const std::string TRAJECTORY_TOPIC = "/teb_poses";
+const std::string TRAJECTORY_TOPIC = "/local_plan";
 const int TF_PUBLISH_FREQUENCY = 20;  // base_link to base_link_fake. Frequency in Hz.
 
 FakeVelTransform::FakeVelTransform(const rclcpp::NodeOptions & options)
@@ -32,7 +32,7 @@ FakeVelTransform::FakeVelTransform(const rclcpp::NodeOptions & options)
     CMD_VEL_TOPIC, 1, std::bind(&FakeVelTransform::cmdVelCallback, this, std::placeholders::_1));
   cmd_vel_chassis_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(
     AFTER_TF_CMD_VEL, rclcpp::QoS(rclcpp::KeepLast(1)));
-  local_pose_sub_ = this->create_subscription<geometry_msgs::msg::PoseArray>(
+  local_pose_sub_ = this->create_subscription<nav_msgs::msg::Path>(
     TRAJECTORY_TOPIC, 1,
     std::bind(&FakeVelTransform::localPoseCallback, this, std::placeholders::_1));
 
@@ -43,7 +43,7 @@ FakeVelTransform::FakeVelTransform(const rclcpp::NodeOptions & options)
 }
 
 // Get the local pose from planner
-void FakeVelTransform::localPoseCallback(const geometry_msgs::msg::PoseArray::SharedPtr msg)
+void FakeVelTransform::localPoseCallback(const nav_msgs::msg::Path::SharedPtr msg)
 {
   if (!msg || msg->poses.empty()) {
     RCLCPP_WARN(get_logger(), "Received empty or invalid PoseArray message");
@@ -52,7 +52,7 @@ void FakeVelTransform::localPoseCallback(const geometry_msgs::msg::PoseArray::Sh
 
   // Choose the pose based on the size of the poses array
   size_t index = std::min(msg->poses.size() / 4, msg->poses.size() - 1);
-  const geometry_msgs::msg::Pose& selected_pose = msg->poses[index];
+  const geometry_msgs::msg::Pose & selected_pose = msg->poses[index].pose;
 
   // Update current angle based on the difference between teb_angle and base_link_angle_
   double teb_angle = tf2::getYaw(selected_pose.orientation);

@@ -15,7 +15,7 @@ nav2 发布的速度也是基于 `base_link_fake` 坐标系的，通过 tf2 将�
 订阅：
 
 - nav2 发布的基于 base_link_fake 坐标系的速度指令 `/cmd_vel`
-- teb_local_planner 发布的局部路径朝向 `/teb_poses`
+- nav2 controller 发布的局部路径朝向 `/local_path`
 - `odom` 到 `base_link` 的 tf 变换
 
 发布：
