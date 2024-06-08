@@ -119,9 +119,9 @@ controller_server:
       dt_ref: 0.6                                   #轨迹的期望时间分辨率（应该与底层控制速率的数量级相符）
       dt_hysteresis: 0.06                           #自动调整大小的滞后（根据当前时间分辨率 dt）：通常为 dt_ref 的 10%
       max_samples: 500                              #最大样本数量；警告：如果太小，离散化/分辨率可能不足以用于给定的机器人模型，或者避障不再有效。
-      global_plan_overwrite_orientation: False       #覆盖全局规划器提供的局部子目标的方向
+      global_plan_overwrite_orientation: False      #覆盖全局规划器提供的局部子目标的方向
       allow_init_with_backwards_motion: True        #如果为真，基础轨迹可能会以后退运动初始化，以防目标在本地代价地图中位于起点之后（仅当机器人配备后部传感器时推荐）
-      max_global_plan_lookahead_dist: 1.2           #指定用于优化考虑的全局规划子集的最大长度（累积欧氏距离）[如果 <=0：禁用；长度也受到本地代价地图大小的限制！
+      max_global_plan_lookahead_dist: 2.0           #指定用于优化考虑的全局规划子集的最大长度（累积欧氏距离）[如果 <=0：禁用；长度也受到本地代价地图大小的限制！
       force_reinit_new_goal_dist: 1.0               #如果之前的目标更新距离超过此值，则强制规划器重新初始化轨迹
       force_reinit_new_goal_angular: 0.78           #如果之前的目标更新的角度超过此弧度值，则强制规划器重新初始化轨迹
       feasibility_check_no_poses: 0                 #在预测路径上，每个采样间隔需要检查可行性的姿态数目
@@ -141,9 +141,9 @@ controller_server:
       #*******************************************************************************
       max_vel_x: 2.0                        #最大平移速度
       max_vel_x_backwards: 2.0              #最大后退速度
-      max_vel_theta: 3.0                   #最大转向角速度
-      acc_lim_x: 4.5                        #最大平移加速度
-      acc_lim_theta: 3.0                   #最大角加速度
+      max_vel_theta: 6.0                    #最大转向角速度
+      acc_lim_x: 2.0                        #最大平移加速度
+      acc_lim_theta: 6.0                    #最大角加速度
       is_footprint_dynamic: False           #如果为真，在检查轨迹可行性之前更新足迹
       use_proportional_saturation: False    #如果为true，则按比例减少所有扭曲分量（线性x和y以及角度z）（如果任何扭曲分量超过其相应的界限），而不是单独饱和每个扭曲分量
       transform_tolerance: 0.5              #在TF树中查询转换时的容差（秒）
@@ -154,13 +154,13 @@ controller_server:
       # min_turning_radius: 0.0             #机器人的最小转弯半径。对于差速驱动机器人，此值为0
       # wheelbase: 1.0                      #驱动轮轴与转向轮轴之间的距离。后轮驱动机器人此值可能为负数。
       # cmd_angle_instead_rotvel: False     #是否用转向角代替控制指令消息中的旋转速度（需要结合轴距参数使用）
-      
+
       #*******************************************************************************
       # Robot/Omni 此部分参数仅适用于全方位移动机器人
       #*******************************************************************************
       max_vel_y: 2.0
-      acc_lim_y: 4.0
-      
+      acc_lim_y: 2.0
+
       #*******************************************************************************
       # GoalTolerance 目标容差
       #*******************************************************************************
@@ -181,7 +181,7 @@ controller_server:
       # costmap_converter_plugin: "costmap_converter::CostmapToPolygonsDBSMCCH"
       # costmap_converter_spin_thread: True
       # costmap_converter_rate: 10
-  
+
       #*******************************************************************************
       # Obstacle - Velocity ratio parameters 该组包含用于根据障碍物 proximity 动态调整机器人速度的设置。
       #*******************************************************************************
@@ -237,7 +237,7 @@ controller_server:
       obstacle_heading_threshold: 0.45      #为了将障碍物纳入探索范围，需要指定障碍物朝向和目标朝向的归一化点积的阈值
       switching_blocking_period: 0.0        #指定允许切换到新的等效类之前需要终止的持续时间
       viapoints_all_candidates: True        #若为真，则所有不同拓扑结构的路径都会附加到路径点集合上，否则只会附加与初始/全局计划共享相同路径点的路径 (在测试优化节点中没有效果)
-      delete_detours_backwards: True 
+      delete_detours_backwards: True
       max_ratio_detours_duration_best_duration: 3.0
       visualize_hc_graph: False             #可视化用于探索新拓扑类的图
 
@@ -245,7 +245,7 @@ controller_server:
       # Recovery
       #*******************************************************************************
       #当规划器检测到系统异常，允许缩小时域规划范围,TEB将以更近的点作为规划目标，尝试重新规划出可行路径;
-      shrink_horizon_backup: True         
+      shrink_horizon_backup: True
       shrink_horizon_min_duration: 10.0         #如果检测到不可行的轨迹，激活缩小的水平线后备模式，本参数为其最短持续时间。
       oscillation_recovery: True                #尝试检测和解决振荡
       oscillation_v_eps: 0.1                    #(0,1)内的 normalized 线速度的平均值的阈值，判断机器人是否运动异常
@@ -266,41 +266,26 @@ local_costmap:
       height: 5
       resolution: 0.02
       robot_radius: 0.2
-      plugins: ["voxel2d_layer", "inflation_layer"]
-      inflation_layer:
-        plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 8.0
-        inflation_radius: 0.7
-      voxel2d_layer:
-        plugin: "nav2_costmap_2d::VoxelLayer"
-        enabled: True
-        publish_voxel_map: False
-        origin_z: 0.0
-        z_resolution: 0.05
-        z_voxels: 16
-        max_obstacle_height: 2.0
-        mark_threshold: 0
+      plugins: ["obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
         observation_sources: scan
         scan:
           topic: /scan
-          obstacle_max_range: 10.0
-          obstacle_min_range: 0.0
-          raytrace_min_range: 0.0
-          raytrace_max_range: 20.0
-          min_obstacle_height: 0.0
+          raytrace_max_range: 6.0
+          obstacle_max_range: 6.0
+          obstacle_min_range: 0.1
           max_obstacle_height: 2.0
-          clearing: True
-          marking: True
+          clearing: true
+          marking: true
+          inf_is_valid: true
           data_type: "LaserScan"
-      static_layer:
-        map_subscribe_transient_local: True
-      always_send_full_costmap: True
-  local_costmap_client:
-    ros__parameters:
-      use_sim_time: False
-  local_costmap_rclcpp_node:
-    ros__parameters:
-      use_sim_time: False
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 5.0
+        inflation_radius: 0.6
+      always_send_full_costmap: true
 
 global_costmap:
   global_costmap:
@@ -318,7 +303,7 @@ global_costmap:
         plugin: "spatio_temporal_voxel_layer/SpatioTemporalVoxelLayer"
         # https://github.com/SteveMacenski/spatio_temporal_voxel_layer
         enabled:                  true
-        voxel_decay:              15.0                              # 如果是线性衰减，单位为秒；如果是指数衰减，则为 e 的 n 次方
+        voxel_decay:              0.5                               # 如果是线性衰减，单位为秒；如果是指数衰减，则为 e 的 n 次方
         decay_model:              0                                 # 衰减模型，0=线性，1=指数，-1=持久
         voxel_size:               0.05                              # 每个体素的尺寸，单位为米
         track_unknown_space:      true                              # default space is unknown
@@ -326,7 +311,7 @@ global_costmap:
         update_footprint_enabled: true
         combination_method:       1                                 # 1=max, 0=override
         origin_z:                 0.0                               # 单位为米
-        publish_voxel_map:        false                              # default false, 是否发布体素地图
+        publish_voxel_map:        true                              # default false, 是否发布体素地图
         transform_tolerance:      0.2                               # 单位为秒
         mapping_mode:             false                             # default off, saves map not for navigation
         map_save_duration:        60.0                              # default 60s, how often to autosave
@@ -336,13 +321,13 @@ global_costmap:
           topic: /segmentation/obstacle
           marking: true
           clearing: false
-          obstacle_range: 3.0                                       # 障碍物检测范围，单位为米
-          min_obstacle_height: 0.2                                  # 最小障碍物高度，单位为米
-          max_obstacle_height: 2.0                                  # 最大障碍物高度，单位为米
+          obstacle_range: 3.0                                       # meters
+          min_obstacle_height: 0.2                                  # default 0, meters
+          max_obstacle_height: 2.0                                  # default 3, meters
           expected_update_rate: 0.0                                 # default 0, if not updating at this rate at least, remove from buffer
-          observation_persistence: 0.0                              # default 0, use all measurements taken during now-value, 0=latest 
+          observation_persistence: 0.0                              # default 0, use all measurements taken during now-value, 0=latest
           inf_is_valid: false                                       # default false, for laser scans
-          filter: "voxel"                                           # default passthrough, apply "voxel", "passthrough", or no filter to sensor data, recommend on     
+          filter: "voxel"                                           # default passthrough, apply "voxel", "passthrough", or no filter to sensor data, recommend on
           voxel_min_points: 0                                       # default 0, minimum points per voxel for voxel filter
           clear_after_reading: true                                 # default false, clear the buffer after the layer gets readings from it
         livox_clear:
@@ -351,13 +336,22 @@ global_costmap:
           topic: /segmentation/obstacle
           marking: false
           clearing: true
-          max_z: 8.0                                                # 最大 Z 坐标，单位为米
-          min_z: 1.0                                                # 最小 Z 坐标，单位为米
+          max_z: 8.0                                                # default 10, meters
+          min_z: 1.0                                                # default 0, meters
           vertical_fov_angle: 1.029                                 # 垂直视场角，单位为弧度，For 3D lidars it's the symmetric FOV about the planar axis.
-          vertical_fov_padding: 0.05                                # 3D Lidar only. Default 0, in meters 
+          vertical_fov_padding: 0.05                                # 3D Lidar only. Default 0, in meters
           horizontal_fov_angle: 6.29                                # 3D 激光雷达水平视场角
-          decay_acceleration: 5.0                                   # default 0, 1/s^2. 
+          decay_acceleration: 5.0                                   # default 0, 1/s^2.
           model_type: 1                                             # 0=深度相机，1=3D激光雷达
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        footprint_clearing_enabled: True
+        map_subscribe_transient_local: True
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 8.0
+        inflation_radius: 0.7
+      always_send_full_costmap: True
 
 map_saver:
   ros__parameters:
@@ -382,7 +376,7 @@ recoveries_server:
   ros__parameters:
     costmap_topic: local_costmap/costmap_raw
     footprint_topic: local_costmap/published_footprint
-    cycle_frequency: 10.0
+    cycle_frequency: 2.0
     recovery_plugins: ["spin", "backup"]
     spin:
       plugin: "nav2_recoveries/Spin"
@@ -393,9 +387,9 @@ recoveries_server:
     transform_timeout: 0.1
     use_sim_time: False
     simulate_ahead_time: 1.0
-    max_rotational_vel: 20.0
+    max_rotational_vel: 3.0
     min_rotational_vel: 0.4
-    rotational_acc_lim: 10.0
+    rotational_acc_lim: 3.0
 
 map_server:
   ros__parameters:
@@ -407,11 +401,11 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [2.0, 2.0, 10.0]
-    min_velocity: [-2.0, -2.0, -10.0]
+    max_velocity: [2.0, 2.0, 3.0]
+    min_velocity: [-2.0, -2.0, -3.0]
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0
-    max_accel: [4.0, 4.0, 10.0]
-    max_decel: [-4.0, -4.0, -10.0]
+    max_accel: [2.0, 2.0, 6.0]
+    max_decel: [-2.0, -2.0, -6.0]
     odom_topic: "Odometry"
     odom_duration: 0.1
